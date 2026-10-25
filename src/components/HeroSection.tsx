@@ -1,6 +1,7 @@
 import React from 'react';
 import { SiteSettings } from '../types/index.js';
 import { Zap, ArrowDown, Sparkles, CheckCircle2, Rocket } from 'lucide-react';
+import defaultZeusImg from '../assets/images/zeus_mentor_portrait_1792940298413.jpg';
 
 interface HeroSectionProps {
   settings: SiteSettings;
@@ -75,7 +76,17 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ settings, onExploreCli
               {/* Image */}
               <div className="relative aspect-square w-full overflow-hidden">
                 <img
-                  src={settings.zeusImage || '/src/assets/images/zeus_mentor_portrait_1792940298413.jpg'}
+                  src={
+                    settings.zeusImage && !settings.zeusImage.includes('/src/assets/')
+                      ? settings.zeusImage
+                      : defaultZeusImg || '/images/zeus_mentor_portrait.jpg'
+                  }
+                  onError={(e) => {
+                    const target = e.currentTarget;
+                    if (!target.src.endsWith('/images/zeus_mentor_portrait.jpg')) {
+                      target.src = '/images/zeus_mentor_portrait.jpg';
+                    }
+                  }}
                   alt="Zeus Mentor - Criador de Sites com IA"
                   className="w-full h-full object-cover object-top transform group-hover:scale-105 transition-transform duration-700"
                   referrerPolicy="no-referrer"

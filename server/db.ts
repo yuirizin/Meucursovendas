@@ -6,7 +6,7 @@ import { CourseModule, PromptCard, SiteSettings, UserRecord, VideoLesson } from 
 
 const DATA_DIR = path.resolve(process.cwd(), 'data');
 const SQLITE_FILE = path.join(DATA_DIR, 'database.sqlite');
-const INITIAL_ZEUS_PORTRAIT = '/src/assets/images/zeus_mentor_portrait_1792940298413.jpg';
+const INITIAL_ZEUS_PORTRAIT = '/images/zeus_mentor_portrait.jpg';
 
 export class SQLiteDatabaseService {
   private static instance: SQLiteDatabaseService;
@@ -46,6 +46,13 @@ export class SQLiteDatabaseService {
         this.db = new SQL.Database(fileBuffer);
         this.isInitialized = true;
         this.createTablesIfNotExist();
+        // Migrate any old /src/assets/ path in existing DB
+        try {
+          this.db.run(`UPDATE site_settings SET zeus_image = '${INITIAL_ZEUS_PORTRAIT}' WHERE zeus_image LIKE '%/src/assets/%' OR zeus_image = '' OR zeus_image IS NULL;`);
+          this.persist();
+        } catch {
+          // ignore if table empty or migration not needed
+        }
         return;
       } catch (err) {
         console.error('Failed reading existing sqlite db, creating new:', err);

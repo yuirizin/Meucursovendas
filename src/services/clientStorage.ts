@@ -6,7 +6,7 @@ const STORAGE_KEY_PROMPTS = 'zeus_prompts';
 const STORAGE_KEY_VIDEO = 'zeus_video_data';
 const STORAGE_KEY_USERS = 'zeus_users_list';
 
-const INITIAL_ZEUS_PORTRAIT = '/src/assets/images/zeus_mentor_portrait_1792940298413.jpg';
+const INITIAL_ZEUS_PORTRAIT = '/images/zeus_mentor_portrait.jpg';
 
 export interface StoredUser extends User {
   plainPassword?: string;
@@ -497,7 +497,12 @@ export const clientStorage = {
         localStorage.setItem(STORAGE_KEY_SETTINGS, JSON.stringify(DEFAULT_SETTINGS));
         return DEFAULT_SETTINGS;
       }
-      return JSON.parse(raw);
+      const parsed = JSON.parse(raw);
+      if (parsed.zeusImage && parsed.zeusImage.includes('/src/assets/')) {
+        parsed.zeusImage = '/images/zeus_mentor_portrait.jpg';
+        localStorage.setItem(STORAGE_KEY_SETTINGS, JSON.stringify(parsed));
+      }
+      return parsed;
     } catch {
       return DEFAULT_SETTINGS;
     }

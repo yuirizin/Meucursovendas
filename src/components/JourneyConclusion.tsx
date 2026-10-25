@@ -2,7 +2,9 @@ import React from 'react';
 import { SiteSettings } from '../types/index.js';
 import { Zap, ArrowUp, Award } from 'lucide-react';
 
-const ZEUS_TRIUMPH_IMAGE = '/src/assets/images/zeus_triumph_mentor_1792940299198.jpg';
+import zeusTriumphImg from '../assets/images/zeus_triumph_mentor_1792940299198.jpg';
+
+const ZEUS_TRIUMPH_IMAGE = zeusTriumphImg || '/images/zeus_triumph_mentor.jpg';
 
 interface JourneyConclusionProps {
   settings: SiteSettings;
@@ -38,6 +40,12 @@ export const JourneyConclusion: React.FC<JourneyConclusionProps> = ({ settings, 
             <div className="my-8 relative w-48 sm:w-56 aspect-square rounded-2xl overflow-hidden border-2 border-purple-500/50 shadow-2xl shadow-purple-900/50">
               <img
                 src={ZEUS_TRIUMPH_IMAGE}
+                onError={(e) => {
+                  const target = e.currentTarget;
+                  if (!target.src.endsWith('/images/zeus_triumph_mentor.jpg')) {
+                    target.src = '/images/zeus_triumph_mentor.jpg';
+                  }
+                }}
                 alt="Zeus no encerramento triunfante da jornada"
                 className="w-full h-full object-cover"
                 referrerPolicy="no-referrer"

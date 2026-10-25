@@ -2,7 +2,9 @@ import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { Zap, Eye, EyeOff, Lock, User, ArrowRight, ShieldCheck, Sparkles } from 'lucide-react';
 
-const ZEUS_HERO_IMAGE = '/src/assets/images/zeus_mentor_portrait_1792940298413.jpg';
+import zeusPortraitImg from '../assets/images/zeus_mentor_portrait_1792940298413.jpg';
+
+const ZEUS_HERO_IMAGE = zeusPortraitImg || '/images/zeus_mentor_portrait.jpg';
 
 export const LoginScreen: React.FC = () => {
   const { login } = useAuth();
@@ -45,6 +47,12 @@ export const LoginScreen: React.FC = () => {
           <div className="absolute inset-0 z-0">
             <img
               src={ZEUS_HERO_IMAGE}
+              onError={(e) => {
+                const target = e.currentTarget;
+                if (!target.src.endsWith('/images/zeus_mentor_portrait.jpg')) {
+                  target.src = '/images/zeus_mentor_portrait.jpg';
+                }
+              }}
               alt="Zeus - Mentor Digital e Deus dos Raios IA"
               className="w-full h-full object-cover object-top opacity-75 transform hover:scale-105 transition-transform duration-700"
               referrerPolicy="no-referrer"

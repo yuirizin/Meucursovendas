@@ -33,7 +33,7 @@ interface AdminDashboardProps {
 type SimpleTab = 'video' | 'modules' | 'prompts' | 'users';
 
 // High reliability sample video for testing with 1 click
-const SAMPLE_DEMO_VIDEO_URL = 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4';
+const SAMPLE_DEMO_VIDEO_URL = 'https://drive.google.com/file/d/1mR2kn5mOX_Ey2X52jfW3AfnY-t4jwLtf/view?usp=drivesdk';
 
 export const AdminDashboard: React.FC<AdminDashboardProps> = ({ isOpen, onClose, onRefreshContent }) => {
   const { token, user: currentUser } = useAuth();
@@ -173,7 +173,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ isOpen, onClose,
         body: JSON.stringify({
           filePath: targetUrl || null,
           title: videoTitleInput || 'Aula Principal — Aprenda na Prática o Método Completo',
-          duration: videoDurationInput || '32:45',
+          duration: videoDurationInput || '6:45',
           isPublished: true
         })
       });
@@ -195,7 +195,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ isOpen, onClose,
     const updated = clientStorage.updateVideo({
       filePath: targetUrl || null,
       title: videoTitleInput || 'Aula Principal — Aprenda na Prática o Método Completo',
-      duration: videoDurationInput || '32:45',
+      duration: videoDurationInput || '6:45',
       isPublished: true
     });
     setVideo(updated);
@@ -533,7 +533,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ isOpen, onClose,
                   <span>Configurar Vídeo da Aula Principal</span>
                 </h3>
                 <p className="text-xs text-slate-300 mt-1">
-                  Você pode colar um link do <strong>YouTube</strong>, <strong>Vimeo</strong>, <strong>link direto MP4</strong> ou fazer upload do seu arquivo.
+                  Você pode colar um link do <strong>Google Drive</strong>, <strong>YouTube</strong>, <strong>Vimeo</strong>, <strong>link direto MP4</strong> ou fazer upload do seu arquivo.
                 </p>
               </div>
 
@@ -562,21 +562,23 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ isOpen, onClose,
                     type="text"
                     value={videoUrlInput}
                     onChange={(e) => setVideoUrlInput(e.target.value)}
-                    placeholder="Ex: https://www.youtube.com/watch?v=... ou https://.../video.mp4"
+                    placeholder="Ex: Google Drive (drive.google.com/file/d/...), YouTube ou link direto MP4"
                     className="w-full px-4 py-3 rounded-xl bg-[#0B0710] border border-purple-900/60 text-white placeholder-slate-500 text-xs sm:text-sm focus:outline-none focus:border-[#A855F7]"
                   />
                   <p className="text-[11px] text-slate-400">
-                    Funciona com links comuns do YouTube (ex: youtube.com/watch?v=...), Vimeo ou links MP4 na internet.
+                    Funciona perfeitamente com links do Google Drive, YouTube, Vimeo ou links diretos de vídeo MP4 na internet.
                   </p>
                 </div>
 
                 {/* Instant Video Preview Box */}
                 {videoUrlInput && (
                   <div className="rounded-xl overflow-hidden border border-purple-900/50 bg-black aspect-video max-h-56 mx-auto">
-                    {previewSource.type === 'youtube' || previewSource.type === 'vimeo' ? (
+                    {previewSource.type === 'youtube' || previewSource.type === 'vimeo' || previewSource.type === 'googledrive' ? (
                       <iframe
                         src={previewSource.embedUrl}
                         title="Prévia"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                        allowFullScreen
                         className="w-full h-full border-0"
                       />
                     ) : (

@@ -46,9 +46,10 @@ export class SQLiteDatabaseService {
         this.db = new SQL.Database(fileBuffer);
         this.isInitialized = true;
         this.createTablesIfNotExist();
-        // Migrate any old /src/assets/ path in existing DB
+        // Migrate any old /src/assets/ path or old video in existing DB
         try {
           this.db.run(`UPDATE site_settings SET zeus_image = '${INITIAL_ZEUS_PORTRAIT}' WHERE zeus_image LIKE '%/src/assets/%' OR zeus_image = '' OR zeus_image IS NULL;`);
+          this.db.run(`UPDATE videos SET file_path = 'https://drive.google.com/file/d/1mR2kn5mOX_Ey2X52jfW3AfnY-t4jwLtf/view?usp=drivesdk', duration = '6:45' WHERE file_path LIKE '%BigBuckBunny%' OR file_path IS NULL OR file_path = '' OR duration = '32:45' OR duration = '09:56';`);
           this.persist();
         } catch {
           // ignore if table empty or migration not needed
@@ -609,9 +610,9 @@ Mantenha uma planilha simples ou aplicativo de gestão organizado com as seguint
           'video-1',
           'Aula Principal — Aprenda na Prática o Método Completo',
           'Agora que você conhece as oito etapas, chegou a hora de acompanhar o processo na prática. Nesta aula, você poderá observar como pesquisar empresas no Google Maps, identificar oportunidades, utilizar a inteligência artificial para criar um site, personalizar o resultado e apresentar uma proposta comercial. Assista com atenção e aplique cada etapa no seu próprio projeto.',
-          null,
+          'https://drive.google.com/file/d/1mR2kn5mOX_Ey2X52jfW3AfnY-t4jwLtf/view?usp=drivesdk',
           'video/mp4',
-          '32:45',
+          '6:45',
           now,
           1
         ]

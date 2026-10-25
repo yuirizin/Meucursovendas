@@ -430,9 +430,9 @@ const DEFAULT_VIDEO: VideoLesson = {
   id: 'video-1',
   title: 'Aula Principal — Aprenda na Prática o Método Completo',
   description: 'Agora que você conhece as oito etapas, chegou a hora de acompanhar o processo na prática. Nesta aula, você poderá observar como pesquisar empresas no Google Maps, identificar oportunidades, utilizar a inteligência artificial para criar um site, personalizar o resultado e apresentar uma proposta comercial. Assista com atenção e aplique cada etapa no seu próprio projeto.',
-  filePath: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
+  filePath: 'https://drive.google.com/file/d/1mR2kn5mOX_Ey2X52jfW3AfnY-t4jwLtf/view?usp=drivesdk',
   fileType: 'video/mp4',
-  duration: '32:45',
+  duration: '6:45',
   uploadedAt: new Date().toISOString(),
   isPublished: true
 };
@@ -570,7 +570,18 @@ export const clientStorage = {
         localStorage.setItem(STORAGE_KEY_VIDEO, JSON.stringify(DEFAULT_VIDEO));
         return DEFAULT_VIDEO;
       }
-      return JSON.parse(raw);
+      const parsed = JSON.parse(raw);
+      // Auto-migrate if stored video is old sample video or placeholder duration
+      if (parsed.filePath && (parsed.filePath.includes('BigBuckBunny') || parsed.duration === '32:45' || parsed.duration === '09:56' || !parsed.filePath)) {
+        const migrated = {
+          ...parsed,
+          filePath: DEFAULT_VIDEO.filePath,
+          duration: DEFAULT_VIDEO.duration
+        };
+        localStorage.setItem(STORAGE_KEY_VIDEO, JSON.stringify(migrated));
+        return migrated;
+      }
+      return parsed;
     } catch {
       return DEFAULT_VIDEO;
     }

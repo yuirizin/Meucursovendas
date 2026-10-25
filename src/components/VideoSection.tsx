@@ -6,10 +6,27 @@ interface VideoSectionProps {
   video: VideoLesson | null;
 }
 
-export function parseVideoSource(url: string | null): { type: 'youtube' | 'vimeo' | 'direct' | 'none'; embedUrl: string } {
+export function parseVideoSource(url: string | null): { type: 'youtube' | 'vimeo' | 'googledrive' | 'direct' | 'none'; embedUrl: string } {
   if (!url || !url.trim()) return { type: 'none', embedUrl: '' };
 
   const clean = url.trim();
+
+  // Google Drive match: drive.google.com/file/d/{id} or drive.google.com/open?id={id} or /uc?id={id}
+  const driveFileMatch = clean.match(/drive\.google\.com\/file\/d\/([a-zA-Z0-9_-]+)/i);
+  if (driveFileMatch && driveFileMatch[1]) {
+    return {
+      type: 'googledrive',
+      embedUrl: `https://drive.google.com/file/d/${driveFileMatch[1]}/preview`
+    };
+  }
+
+  const driveQueryMatch = clean.match(/drive\.google\.com\/(?:open|uc)\?(?:[^\s]*&)?id=([a-zA-Z0-9_-]+)/i);
+  if (driveQueryMatch && driveQueryMatch[1]) {
+    return {
+      type: 'googledrive',
+      embedUrl: `https://drive.google.com/file/d/${driveQueryMatch[1]}/preview`
+    };
+  }
 
   // YouTube match: youtu.be, youtube.com/watch?v=, youtube.com/embed/
   const ytMatch = clean.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))([\w-]{11})/i);
@@ -116,8 +133,8 @@ export const VideoSection: React.FC<VideoSectionProps> = ({ video }) => {
 
         {/* Video Container Box */}
         <div className="rounded-2xl bg-[#160827] border border-purple-800/40 shadow-2xl overflow-hidden backdrop-blur-md">
-          {videoSource.type === 'youtube' || videoSource.type === 'vimeo' ? (
-            /* Embedded YouTube / Vimeo Player */
+          {videoSource.type === 'youtube' || videoSource.type === 'vimeo' || videoSource.type === 'googledrive' ? (
+            /* Embedded Google Drive / YouTube / Vimeo Player */
             <div className="relative aspect-video w-full bg-black">
               <iframe
                 src={videoSource.embedUrl}
@@ -151,11 +168,11 @@ export const VideoSection: React.FC<VideoSectionProps> = ({ video }) => {
                 {video?.title || 'Aula em Vídeo: Da Prospecção à Primeira Venda'}
               </h3>
               <p className="max-w-lg text-xs sm:text-sm text-slate-300 mt-2 leading-relaxed">
-                Nenhum vídeo vinculado no momento. O administrador da plataforma pode colar o link do vídeo (YouTube, Vimeo, MP4) ou fazer upload do arquivo diretamente no <strong className="text-purple-300">Painel Admin</strong>.
+                Nenhum vídeo vinculado no momento. O administrador da plataforma pode colar o link do vídeo (Google Drive, YouTube, Vimeo, MP4) ou fazer upload do arquivo diretamente no <strong className="text-purple-300">Painel Admin</strong>.
               </p>
               <div className="mt-6 inline-flex items-center gap-2 px-3.5 py-1.5 rounded-lg bg-purple-950/60 border border-purple-800/40 text-purple-300 text-xs">
                 <Clock className="w-3.5 h-3.5" />
-                <span>Formatos suportados: Links do YouTube, Vimeo, MP4 direto ou Upload</span>
+                <span>Formatos suportados: Links do Google Drive, YouTube, Vimeo, MP4 direto ou Upload</span>
               </div>
             </div>
           )}
